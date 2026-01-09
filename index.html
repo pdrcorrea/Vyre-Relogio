@@ -15,7 +15,6 @@
 
   <style>
     :root{
-      /* ===== PONTO VIEW THEME (padrão) ===== */
       --bg0:#081423;
       --bg1:#0a2232;
 
@@ -28,13 +27,11 @@
       --radius:22px;
       --shadow:0 14px 40px rgba(0,0,0,.22);
 
-      --safe: clamp(14px, 2.0vw, 28px);
+      --safe: clamp(14px, 2vw, 28px);
       --pad:  clamp(16px, 1.4vw, 26px);
 
-      /* Barra superior (azul) */
       --topbar: linear-gradient(180deg,#2f6f9d 0%,#184c75 55%,#0f3b5e 100%);
 
-      /* Badge glass do ícone */
       --glass: rgba(255,255,255,.18);
       --glass2: rgba(255,255,255,.10);
       --glassStroke: rgba(255,255,255,.26);
@@ -46,9 +43,6 @@
     body{
       margin:0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--ink);
-      overflow:hidden;
-
       background:
         radial-gradient(1200px 900px at 25% 10%, rgba(87,184,231,.22) 0%, rgba(10,46,62,0) 60%),
         radial-gradient(900px 700px at 75% 80%, rgba(52,198,208,.14) 0%, rgba(6,18,24,0) 65%),
@@ -56,9 +50,9 @@
       padding: var(--safe);
       display:grid;
       place-items:center;
+      overflow:hidden;
     }
 
-    /* Moldura externa */
     .shell{
       width: min(1300px, 96vw);
       height: calc(100vh - (var(--safe) * 2));
@@ -75,163 +69,159 @@
       border-radius: var(--radius);
       background: var(--card);
       overflow:hidden;
-      box-shadow: 0 10px 26px rgba(2,10,23,.10);
-
-      opacity:0;
-      transform: translateY(12px);
-      animation: in 900ms cubic-bezier(.22,1,.36,1) forwards;
       position:relative;
+      animation: in .8s ease forwards;
     }
-    @keyframes in{ to{ opacity:1; transform: translateY(0); } }
 
-    /* Barra azul superior com ícone + título (como no mockup) */
+    @keyframes in{
+      from{ opacity:0; transform: translateY(12px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
     .topbar{
       background: var(--topbar);
       height: 76px;
-      padding: 0 var(--pad);
       display:flex;
       align-items:center;
       justify-content:center;
       gap: 14px;
       color:#fff;
+      padding: 0 var(--pad);
     }
 
     .iconBadge{
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+      width:46px;
+      height:46px;
+      border-radius:14px;
       display:grid;
       place-items:center;
       background: linear-gradient(135deg, var(--glass), var(--glass2));
-      border: 1px solid var(--glassStroke);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+      border:1px solid var(--glassStroke);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      flex: 0 0 auto;
     }
 
     .material-icons-outlined{
-      font-size: 24px;
-      line-height: 1;
+      font-size:24px;
       color:#fff;
-      opacity: .95;
     }
 
     .title{
-      font-size: clamp(18px, 2.1vw, 26px);
-      font-weight: 900;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      white-space:nowrap;
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight:900;
+      letter-spacing:.12em;
     }
 
-    /* Conteúdo */
     .content{
       height: calc(100% - 76px);
-      padding: clamp(22px, 3.0vw, 42px);
+      padding: clamp(22px, 3vw, 42px);
       display:grid;
       place-items:center;
     }
 
-    /* Card cinza central (como no mockup) */
     .clockCard{
       width: min(920px, 92%);
-      border-radius: 26px;
-      background: #efefef;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-      padding: clamp(22px, 3.2vw, 44px);
+      background:#efefef;
+      border-radius:26px;
+      padding: clamp(24px, 3vw, 48px);
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
       text-align:center;
-      gap: 18px;
+      gap: 20px;
     }
 
     .date{
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: #111827;
-      opacity: .9;
+      font-size:14px;
+      font-weight:900;
+      letter-spacing:.18em;
     }
 
     .time{
       display:flex;
       align-items:baseline;
-      justify-content:center;
-      gap: 12px;
-      line-height: 1;
-      margin: 4px 0;
+      gap: 14px;
+      line-height:1;
     }
 
     .hm{
-      font-size: clamp(76px, 12.5vw, 160px);
-      font-weight: 900;
-      letter-spacing: .04em;
-      color: #0b0f14;
+      font-size: clamp(76px, 12vw, 160px);
+      font-weight:900;
     }
 
-    /* segundos discretos cinza, alinhados como no mockup */
     .sec{
-      font-size: clamp(22px, 3.3vw, 44px);
-      font-weight: 900;
-      letter-spacing: .08em;
-      color: #6b7280;
+      font-size: clamp(22px, 3vw, 44px);
+      font-weight:900;
+      color:#6b7280;
     }
 
     .loc{
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: #0b0f14;
-      opacity: .85;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.18em;
       display:flex;
-      gap: 10px;
       align-items:center;
-      justify-content:center;
-      flex-wrap:wrap;
+      gap:8px;
     }
+
     .loc .material-icons-outlined{
-      font-size: 18px;
-      color:#0b0f14;
+      font-size:18px;
+      color:#000;
       opacity:.55;
     }
 
-    /* Rodapé: só logo discreta (sem "atualizado") */
     .brand{
       position:absolute;
-      right: 16px;
-      bottom: 12px;
-      opacity: .55;
-      pointer-events:none;
-      display:flex;
-      align-items:center;
-      gap: 8px;
-    }
-    .brand img{
-      height: 18px;
-      width:auto;
-      display:block;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.10));
+      right:16px;
+      bottom:12px;
+      opacity:.55;
     }
 
-    @media (max-width: 720px){
-      .shell{ height:auto; min-height: calc(100vh - (var(--safe) * 2)); }
-      .content{ height:auto; }
-      .clockCard{ width: 100%; }
-      .topbar{ height: 70px; }
+    .brand img{
+      height:18px;
+    }
+
+    /* ===== MODO VERTICAL (TV PORTRAIT) ===== */
+    @media (orientation: portrait){
+      .shell{
+        width: min(540px, 92vw);
+        height:100%;
+      }
+
+      .topbar{
+        height:84px;
+      }
+
+      .clockCard{
+        min-height:62vh;
+        width:100%;
+        gap:28px;
+      }
+
+      .hm{
+        font-size: clamp(110px, 22vh, 200px);
+      }
+
+      .sec{
+        font-size: clamp(28px, 6vh, 52px);
+      }
+
+      .date{
+        font-size: clamp(14px, 2vh, 18px);
+      }
+
+      .loc{
+        font-size: clamp(13px, 2vh, 16px);
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="shell">
-    <section class="panel" aria-label="Painel de relógio">
+    <section class="panel">
       <header class="topbar">
-        <div class="iconBadge" aria-hidden="true">
+        <div class="iconBadge">
           <span class="material-icons-outlined">access_time</span>
         </div>
         <div class="title">RELÓGIO</div>
@@ -239,66 +229,57 @@
 
       <main class="content">
         <div class="clockCard">
-          <div class="date" id="date">DIA, MÊS, ANO</div>
+          <div class="date" id="date"></div>
 
-          <div class="time" aria-label="Horário atual">
-            <div class="hm" id="hm">HH:MM</div>
-            <div class="sec" id="sec">SS</div>
+          <div class="time">
+            <div class="hm" id="hm"></div>
+            <div class="sec" id="sec"></div>
           </div>
 
           <div class="loc">
-            <span class="material-icons-outlined" aria-hidden="true">location_on</span>
-            <span id="location">LOCALIZAÇÃO</span>
+            <span class="material-icons-outlined">location_on</span>
+            <span id="location"></span>
           </div>
         </div>
       </main>
 
-      <div class="brand" aria-hidden="true">
-        <!-- ajuste o caminho conforme seu projeto -->
+      <div class="brand">
         <img src="assets/logo-pontoview.png" alt="">
       </div>
     </section>
   </div>
 
   <script>
-    /* ====== Clock ====== */
     const hmEl = document.getElementById("hm");
     const secEl = document.getElementById("sec");
     const dateEl = document.getElementById("date");
+    const locEl = document.getElementById("location");
 
-    const days = ["DOMINGO","SEGUNDA-FEIRA","TERÇA-FEIRA","QUARTA-FEIRA","QUINTA-FEIRA","SEXTA-FEIRA","SÁBADO"];
+    const days = ["DOMINGO","SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO"];
     const months = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
+    function pad(n){ return String(n).padStart(2,"0"); }
 
     function tick(){
       const d = new Date();
-      hmEl.textContent = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-      secEl.textContent = pad2(d.getSeconds());
-      dateEl.textContent = `${days[d.getDay()]}, ${pad2(d.getDate())} DE ${months[d.getMonth()]} DE ${d.getFullYear()}`;
+      hmEl.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      secEl.textContent = pad(d.getSeconds());
+      dateEl.textContent = `${days[d.getDay()]}, ${pad(d.getDate())} DE ${months[d.getMonth()]} DE ${d.getFullYear()}`;
     }
 
     tick();
     setInterval(tick, 1000);
 
-    /* ====== Localização por IP (sem permissão do dispositivo) ====== */
-    const locEl = document.getElementById("location");
-
-    function setCityText(city, region){
-      const txt = `${(city || "LOCAL")} - ${(region || "—")}`.toUpperCase();
-      locEl.textContent = txt;
-    }
-
     fetch("https://ipwho.is/")
       .then(r => r.json())
       .then(d => {
-        if (d && d.success){
-          setCityText(d.city, d.region_code || d.country_code);
+        if(d.success){
+          locEl.textContent = `${d.city} - ${d.region_code || d.country_code}`.toUpperCase();
         } else {
-          setCityText("LOCAL INDISPONÍVEL", "");
+          locEl.textContent = "LOCAL INDISPONÍVEL";
         }
       })
-      .catch(() => setCityText("LOCAL INDISPONÍVEL", ""));
+      .catch(()=> locEl.textContent = "LOCAL INDISPONÍVEL");
   </script>
 </body>
 </html>
