@@ -1,442 +1,282 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PontoView • Relógio</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PontoView • Relógio</title>
 
-  <!-- Fonte -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
 
-  <!-- Material Icons (Outlined) -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+<style>
+:root{
+  --header: linear-gradient(180deg,#2f6f9d 0%,#184c75 55%,#0f3b5e 100%);
+  --lineGrad: linear-gradient(90deg,
+    rgba(72,190,255,.00) 0%,
+    rgba(72,190,255,.75) 22%,
+    rgba(84,214,199,.70) 50%,
+    rgba(120,132,255,.65) 78%,
+    rgba(120,132,255,.00) 100%
+  );
 
-  <style>
-    :root{
-      /* ===== PontoView • Branco (fundo) + Card (contraste) ===== */
-      --bg:#ffffff;
+  --bg:#ffffff;
+  --frame:#eaf1fb;
+  --card:#f7f9fd;
 
-      /* Card */
-      --cardA:#0b1f32;   /* base (azul/teal escuro) */
-      --cardB:#071a2a;   /* profundidade */
-      --cardStroke: rgba(255,255,255,.12);
+  --ink:#0b1626;
+  --muted:#5c6a7f;
 
-      /* Texto no card */
-      --ink:#ffffff;
-      --ink2: rgba(255,255,255,.88);
-      --muted: rgba(255,255,255,.66);
+  --radiusOuter:30px;
+  --radius:22px;
 
-      --radius:22px;
-      --shadow: 0 18px 55px rgba(2,10,23,.18);
+  --safe:clamp(12px,2vw,26px);
+  --pad:clamp(16px,1.6vw,28px);
 
-      --safe: clamp(12px, 2.0vw, 28px);
-      --pad:  clamp(14px, 1.4vw, 26px);
+  --glass:rgba(255,255,255,.18);
+  --glass2:rgba(255,255,255,.10);
+  --glassStroke:rgba(255,255,255,.26);
+}
 
-      /* Header */
-      --header: linear-gradient(180deg,#2f6f9d 0%,#184c75 55%,#0f3b5e 100%);
+*{box-sizing:border-box;}
+html,body{height:100%;}
 
-      /* Glass */
-      --glass: rgba(255,255,255,.16);
-      --glass2: rgba(255,255,255,.08);
-      --glassStroke: rgba(255,255,255,.22);
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow:hidden;
+}
 
-      /* Linha degradê */
-      --lineGrad: linear-gradient(90deg,
-        rgba(72,190,255,.00) 0%,
-        rgba(72,190,255,.75) 22%,
-        rgba(84,214,199,.70) 50%,
-        rgba(120,132,255,.65) 78%,
-        rgba(120,132,255,.00) 100%
-      );
-    }
+.app{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+/* ===== Cabeçalho ===== */
+header.topbar{
+  height:92px;
+  padding:0 var(--pad);
+  background:var(--header);
+  display:flex;
+  align-items:center;
+  gap:16px;
+  color:#fff;
+  position:relative;
+}
 
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: #0f172a;
-      overflow:hidden;
-    }
+header.topbar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(720px 180px at 22% 10%, rgba(255,255,255,.20), transparent 62%);
+  opacity:.7;
+  pointer-events:none;
+}
 
-    /* App em tela cheia */
-    .app{
-      height:100%;
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      background: var(--bg);
-    }
+/* 🔲 Badge quadrado (ajuste solicitado) */
+.iconBadge{
+  width:52px;
+  height:52px;
+  border-radius:14px; /* quadrado com bordas arredondadas */
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--glass),var(--glass2));
+  border:1px solid var(--glassStroke);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    0 10px 18px rgba(0,0,0,.16);
+  backdrop-filter:blur(10px);
+}
 
-    /* Header topo (mantém padrão) */
-    header.topbar{
-      height: 86px;
-      min-height: 70px;
-      padding: 0 var(--pad);
-      background: var(--header);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 14px;
-      position:relative;
-      flex: 0 0 auto;
-    }
-    header.topbar::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(700px 170px at 50% 10%, rgba(255,255,255,.22), transparent 62%);
-      pointer-events:none;
-      opacity:.65;
-    }
+.material-icons-outlined{
+  font-size:26px;
+  color:#fff;
+}
 
-    .iconBadge{
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      display:grid;
-      place-items:center;
-      background: linear-gradient(135deg, var(--glass), var(--glass2));
-      border: 1px solid var(--glassStroke);
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.08),
-        0 10px 22px rgba(0,0,0,.16);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      position:relative;
-      overflow:hidden;
-      z-index:1;
-      flex: 0 0 auto;
-    }
-    .iconBadge::before{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: linear-gradient(120deg, rgba(255,255,255,.0), rgba(255,255,255,.26), rgba(255,255,255,.0));
-      transform: translateX(-55%) rotate(14deg);
-      animation: sheen 3.2s ease-in-out infinite;
-      opacity:.55;
-      pointer-events:none;
-    }
-    @keyframes sheen{
-      0%, 45% { transform: translateX(-55%) rotate(14deg); opacity:.0; }
-      60% { opacity:.55; }
-      100% { transform: translateX(55%) rotate(14deg); opacity:0; }
-    }
+.title{
+  font-size:clamp(18px,2vw,28px);
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
 
-    .material-icons-outlined{
-      font-size: 24px;
-      line-height: 1;
-      color:#fff;
-      opacity:.95;
-      z-index:1;
-    }
+/* ===== Conteúdo ===== */
+main.stage{
+  flex:1;
+  display:grid;
+  place-items:center;
+  padding:var(--safe);
+}
 
-    .title{
-      font-size: clamp(18px, 2.1vw, 26px);
-      font-weight: 900;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      white-space:nowrap;
-      position:relative;
-      z-index:1;
-      color:#fff;
-    }
+.outer{
+  width:min(1320px,100%);
+  height:min(720px,100%);
+  border-radius:var(--radiusOuter);
+  background:linear-gradient(180deg,var(--frame),#f4f7fc);
+  padding:18px;
+}
 
-    /* Área central */
-    main.stage{
-      flex: 1 1 auto;
-      min-height: 0;
-      display:grid;
-      place-items:center;
-      padding: var(--safe);
-      background: var(--bg);
-    }
+.card{
+  height:100%;
+  border-radius:calc(var(--radiusOuter) - 10px);
+  background:linear-gradient(180deg,#ffffff,var(--card));
+  border:1px solid rgba(15,23,42,.08);
+  padding:clamp(20px,2.4vw,32px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
 
-    /* Card central contrastando com o fundo branco */
-    .clockCard{
-      width: min(1200px, 100%);
-      height: min(640px, calc(100% - 8px)); /* evita corte em zoom */
-      border-radius: calc(var(--radius) + 8px);
-      background: radial-gradient(900px 420px at 18% 18%, rgba(87,184,231,.22), transparent 62%),
-                  radial-gradient(900px 460px at 84% 88%, rgba(52,198,208,.14), transparent 62%),
-                  linear-gradient(180deg, var(--cardA) 0%, var(--cardB) 100%);
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(2,10,23,.10);
-      position:relative;
-      overflow:hidden;
+/* ===== Conteúdo principal ===== */
+.hero{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(12px,2vh,18px);
+}
 
-      display:grid;
-      place-items:center;
-      padding: clamp(18px, 3vw, 44px);
-    }
+.date{
+  font-size:clamp(12px,1.8vh,16px);
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(11,22,38,.7);
+}
 
-    /* “Glass frame” interno */
-    .clockCard::before{
-      content:"";
-      position:absolute;
-      inset: 14px;
-      border-radius: calc(var(--radius) + 2px);
-      border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      pointer-events:none;
-    }
+.timeRow{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+}
 
-    .content{
-      width: min(980px, 100%);
-      display:grid;
-      grid-template-rows: auto 1fr auto;
-      gap: clamp(10px, 1.8vh, 18px);
-      align-content:center;
-      text-align:center;
-      position:relative;
-      z-index:2;
-      padding: clamp(8px, 1.2vh, 14px);
-    }
+.hm{
+  font-size:clamp(72px,min(12vw,16vh),220px);
+  font-weight:900;
+  letter-spacing:.02em;
+  color:#0b1626;
+  line-height:1;
+}
 
-    .date{
-      font-size: clamp(12px, 1.8vh, 18px);
-      font-weight: 900;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--ink2);
-      user-select:none;
-    }
+.sec{
+  font-size:clamp(18px,min(3.2vw,4.8vh),54px);
+  font-weight:900;
+  color:rgba(11,22,38,.4);
+}
 
-    /* Anti-corte no zoom */
-    .timeRow{
-      min-height: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: clamp(10px, 1.6vw, 16px);
-      line-height: 1;
-      user-select:none;
-      overflow:hidden;
-      padding: clamp(6px, 1.2vh, 14px) 0;
-    }
+.location{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:clamp(12px,1.8vh,16px);
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(11,22,38,.6);
+}
 
-    .hm{
-      font-weight: 900;
-      letter-spacing: .04em;
-      color: var(--ink);
-      text-shadow: 0 18px 40px rgba(0,0,0,.25);
-      font-size: clamp(56px, min(12.5vw, 18vh), 220px);
-      white-space: nowrap;
-      max-width: 100%;
-    }
+.location .material-icons-outlined{
+  font-size:18px;
+  color:rgba(11,22,38,.45);
+}
 
-    .sec{
-      font-weight: 900;
-      letter-spacing: .08em;
-      color: var(--muted);
-      font-size: clamp(18px, min(3.2vw, 4.8vh), 54px);
-      transform: translateY(-0.06em);
-      white-space: nowrap;
-      flex: 0 0 auto;
-    }
+/* ===== Rodapé ===== */
+footer.footer{
+  height:66px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:0 18px;
+  border-top:1px solid rgba(15,23,42,.08);
+  background:#fff;
+  position:relative;
+}
 
-    .loc{
-      font-size: clamp(12px, 1.8vh, 16px);
-      font-weight: 900;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--ink2);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      flex-wrap:wrap;
-      user-select:none;
-    }
-    .loc .material-icons-outlined{
-      font-size: 18px;
-      opacity:.75;
-    }
+.progressLine{
+  position:absolute;
+  top:0;
+  left:18px;
+  right:18px;
+  height:3px;
+  background:var(--lineGrad);
+  border-radius:999px;
+}
 
-    /* Rodapé (mantém linha degradê + logo canto inferior direito) */
-    footer.footer{
-      height: 66px;
-      flex: 0 0 auto;
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:flex-end;
-      padding: 0 18px;
-      background: #ffffff;
-      border-top: 1px solid rgba(15,23,42,.08);
-    }
-
-    .progressLine{
-      position:absolute;
-      left: 18px;
-      right: 18px;
-      top: 0;
-      height: 3px;
-      border-radius: 999px;
-      background: var(--lineGrad);
-      opacity: .95;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
-    }
-
-    .brand img{
-      height: 18px;
-      width:auto;
-      display:block;
-      opacity:.92;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
-      pointer-events:none;
-      user-select:none;
-    }
-
-    /* Ultra compacto: remove segundos e prioriza hora */
-    @media (max-width: 720px){
-      header.topbar{ height: 74px; }
-      .sec{ display:none; }
-      footer.footer{ height: 62px; }
-      .clockCard{ height: min(560px, calc(100% - 8px)); }
-    }
-
-    /* TV vertical: mantém legibilidade e evita corte no zoom */
-    @media (orientation: portrait){
-      header.topbar{ height: 90px; }
-      .sec{ display:none; }
-      .clockCard{
-        width: min(720px, 100%);
-        height: calc(100% - 10px);
-        padding: clamp(16px, 2.4vh, 28px);
-      }
-      .hm{ font-size: clamp(72px, min(16vw, 18vh), 210px); }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .iconBadge::before{ animation:none; }
-    }
-  </style>
+.brand img{
+  height:18px;
+}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <header class="topbar" aria-label="Cabeçalho">
-      <div class="iconBadge" aria-hidden="true">
-        <span class="material-icons-outlined">access_time</span>
-      </div>
-      <div class="title">RELÓGIO</div>
-    </header>
+<div class="app">
+  <header class="topbar">
+    <div class="iconBadge">
+      <span class="material-icons-outlined">access_time</span>
+    </div>
+    <div class="title">RELÓGIO</div>
+  </header>
 
-    <main class="stage" aria-label="Painel de relógio">
-      <section class="clockCard" aria-label="Card do relógio">
-        <div class="content">
-          <div class="date" id="date">DIA, MÊS, ANO</div>
+  <main class="stage">
+    <section class="outer">
+      <div class="card">
+        <div class="hero">
+          <div class="date" id="date">DOMINGO • 28 DE DEZEMBRO DE 2025</div>
 
-          <div class="timeRow" aria-label="Horário atual">
-            <div class="hm" id="hm">HH:MM</div>
-            <div class="sec" id="sec">SS</div>
+          <div class="timeRow">
+            <div class="hm" id="hm">18:04</div>
+            <div class="sec" id="sec">40</div>
           </div>
 
-          <div class="loc">
-            <span class="material-icons-outlined" aria-hidden="true">location_on</span>
-            <span id="location">LOCALIZAÇÃO</span>
+          <div class="location">
+            <span class="material-icons-outlined">location_on</span>
+            <span id="location">LOCALIZANDO…</span>
           </div>
         </div>
-      </section>
-    </main>
-
-    <footer class="footer" aria-hidden="true">
-      <div class="progressLine"></div>
-      <div class="brand">
-        <img src="assets/logo-pontoview.png" alt="">
       </div>
-    </footer>
-  </div>
+    </section>
+  </main>
 
-  <script>
-    /* ====== Clock ====== */
-    const hmEl = document.getElementById("hm");
-    const secEl = document.getElementById("sec");
-    const dateEl = document.getElementById("date");
+  <footer class="footer">
+    <div class="progressLine"></div>
+    <div class="brand">
+      <img src="assets/logo-pontoview.png" alt="">
+    </div>
+  </footer>
+</div>
 
-    const days = ["DOMINGO","SEGUNDA-FEIRA","TERÇA-FEIRA","QUARTA-FEIRA","QUINTA-FEIRA","SEXTA-FEIRA","SÁBADO"];
-    const months = ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+<script>
+const hm=document.getElementById("hm");
+const sec=document.getElementById("sec");
+const dateEl=document.getElementById("date");
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
+const days=["DOMINGO","SEGUNDA-FEIRA","TERÇA-FEIRA","QUARTA-FEIRA","QUINTA-FEIRA","SEXTA-FEIRA","SÁBADO"];
+const months=["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
 
-    function tick(){
-      const d = new Date();
-      hmEl.textContent = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-      secEl.textContent = pad2(d.getSeconds());
-      dateEl.textContent = `${days[d.getDay()]}, ${pad2(d.getDate())} DE ${months[d.getMonth()]} DE ${d.getFullYear()}`;
+const pad=n=>String(n).padStart(2,"0");
+
+function tick(){
+  const d=new Date();
+  hm.textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  sec.textContent=pad(d.getSeconds());
+  dateEl.textContent=`${days[d.getDay()]} • ${pad(d.getDate())} DE ${months[d.getMonth()]} DE ${d.getFullYear()}`;
+}
+tick();
+setInterval(tick,1000);
+
+/* Localização */
+fetch("https://ipwho.is/")
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      document.getElementById("location").textContent=
+        `${d.city} - ${d.region_code || d.country_code}`.toUpperCase();
+    }else{
+      document.getElementById("location").textContent="LOCAL INDISPONÍVEL";
     }
-    tick();
-    setInterval(tick, 1000);
-
-    /* ====== Localização por IP (robusta) ======
-       - tenta 3 provedores (fallback)
-       - sempre define algo
-    */
-    const locEl = document.getElementById("location");
-
-    function setLoc(text){
-      locEl.textContent = (text || "LOCAL INDISPONÍVEL").toUpperCase();
-    }
-    function fmt(city, region){
-      const c = (city || "").trim();
-      const r = (region || "").trim();
-      if (c && r) return `${c} - ${r}`;
-      if (c) return c;
-      if (r) return r;
-      return "LOCAL INDISPONÍVEL";
-    }
-
-    async function fetchJson(url){
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 4500);
-      try{
-        const res = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
-        if(!res.ok) throw new Error("http");
-        return await res.json();
-      } finally {
-        clearTimeout(t);
-      }
-    }
-
-    async function resolveLocation(){
-      // 1) ipwho.is
-      try{
-        const d = await fetchJson("https://ipwho.is/?lang=pt");
-        if (d && d.success){
-          setLoc(fmt(d.city, d.region_code || d.region || d.country_code));
-          return;
-        }
-      }catch(e){}
-
-      // 2) ipapi.co
-      try{
-        const d = await fetchJson("https://ipapi.co/json/");
-        if (d && (d.city || d.region_code || d.country_code)){
-          setLoc(fmt(d.city, d.region_code || d.region || d.country_code));
-          return;
-        }
-      }catch(e){}
-
-      // 3) ip-api.com
-      try{
-        const d = await fetchJson("https://ip-api.com/json/?fields=status,city,region,regionName,countryCode");
-        if (d && d.status === "success"){
-          setLoc(fmt(d.city, d.region || d.countryCode));
-          return;
-        }
-      }catch(e){}
-
-      setLoc("LOCAL INDISPONÍVEL");
-    }
-
-    setLoc("LOCALIZANDO…");
-    resolveLocation();
-  </script>
+  })
+  .catch(()=>document.getElementById("location").textContent="LOCAL INDISPONÍVEL");
+</script>
 </body>
 </html>
