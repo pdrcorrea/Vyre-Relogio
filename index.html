@@ -72,14 +72,12 @@ header.topbar::after{
   inset:0;
   background:radial-gradient(720px 180px at 22% 10%, rgba(255,255,255,.20), transparent 62%);
   opacity:.7;
-  pointer-events:none;
 }
 
-/* 🔲 Badge quadrado (ajuste solicitado) */
 .iconBadge{
   width:52px;
   height:52px;
-  border-radius:14px; /* quadrado com bordas arredondadas */
+  border-radius:14px;
   display:grid;
   place-items:center;
   background:linear-gradient(135deg,var(--glass),var(--glass2));
@@ -154,7 +152,6 @@ main.stage{
 .hm{
   font-size:clamp(72px,min(12vw,16vh),220px);
   font-weight:900;
-  letter-spacing:.02em;
   color:#0b1626;
   line-height:1;
 }
@@ -222,16 +219,16 @@ footer.footer{
     <section class="outer">
       <div class="card">
         <div class="hero">
-          <div class="date" id="date">DOMINGO • 28 DE DEZEMBRO DE 2025</div>
+          <div class="date" id="date"></div>
 
           <div class="timeRow">
-            <div class="hm" id="hm">18:04</div>
-            <div class="sec" id="sec">40</div>
+            <div class="hm" id="hm"></div>
+            <div class="sec" id="sec"></div>
           </div>
 
           <div class="location">
             <span class="material-icons-outlined">location_on</span>
-            <span id="location">LOCALIZANDO…</span>
+            <span id="location">SANTA TERESA - ES</span>
           </div>
         </div>
       </div>
@@ -250,6 +247,7 @@ footer.footer{
 const hm=document.getElementById("hm");
 const sec=document.getElementById("sec");
 const dateEl=document.getElementById("date");
+const locationEl=document.getElementById("location");
 
 const days=["DOMINGO","SEGUNDA-FEIRA","TERÇA-FEIRA","QUARTA-FEIRA","QUINTA-FEIRA","SEXTA-FEIRA","SÁBADO"];
 const months=["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
@@ -265,18 +263,36 @@ function tick(){
 tick();
 setInterval(tick,1000);
 
-/* Localização */
-fetch("https://ipwho.is/")
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.success){
-      document.getElementById("location").textContent=
-        `${d.city} - ${d.region_code || d.country_code}`.toUpperCase();
-    }else{
-      document.getElementById("location").textContent="LOCAL INDISPONÍVEL";
-    }
-  })
-  .catch(()=>document.getElementById("location").textContent="LOCAL INDISPONÍVEL");
+/* ===== Localização robusta ===== */
+
+// fallback imediato (evita delay visual)
+locationEl.textContent = "SANTA TERESA - ES";
+
+const services = [
+  "https://ipapi.co/json/",
+  "https://ipwho.is/",
+  "https://ipinfo.io/json"
+];
+
+async function getLocation() {
+  for (let url of services) {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      let city = data.city;
+      let state = data.region_code || data.region;
+
+      if (city) {
+        locationEl.textContent =
+          `${city} - ${state || "BR"}`.toUpperCase();
+        return;
+      }
+    } catch (e) {}
+  }
+}
+
+getLocation();
 </script>
 </body>
 </html>
